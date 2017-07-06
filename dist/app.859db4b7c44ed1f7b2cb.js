@@ -63,7 +63,7 @@
 /******/ 	__webpack_require__.p = "";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 6);
+/******/ 	return __webpack_require__(__webpack_require__.s = 5);
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -178,30 +178,9 @@ module.exports = g;
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-// generator函数的异步流程处理
-
-const genHandler = generator => {
-    let gen = generator();
-    let next = data => {
-        let result = gen.next(data);
-
-        if (!result.done) {
-            result.value(next);
-        }
-    };
-    next();
-};
-
-/* harmony default export */ __webpack_exports__["a"] = (genHandler);
-
-/***/ }),
-/* 3 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__data_resume__ = __webpack_require__(7);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__data_resume__ = __webpack_require__(6);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__vQuery__ = __webpack_require__(0);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_marked__ = __webpack_require__(9);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_marked__ = __webpack_require__(8);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_marked___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_2_marked__);
 /**
  * 动态将Markdown转换为html格式并不断添加进页面里
@@ -224,30 +203,30 @@ let iClass = 'htmlMode';
 
 // Markdown 转换为 html格式
 const markdownToHtml = () => {
-    return callback => {
+    return new Promise((resolve, reject) => {
         $resumeMarkdown.css({
             display: 'none'
         });
         $resumeWrap.addClass(iClass);
         $resumeTag.html(__WEBPACK_IMPORTED_MODULE_2_marked___default()(__WEBPACK_IMPORTED_MODULE_0__data_resume__["a" /* default */]));
-        callback && callback();
-    };
+        resolve();
+    });
 };
 
 // 每隔60ms不断添加内容
 const showResume = () => {
-    return callback => {
+    return new Promise((resolve, reject) => {
         timer = setInterval(function () {
             currentMarkdown += __WEBPACK_IMPORTED_MODULE_0__data_resume__["a" /* default */].substring(start, start + 1);
             if (currentMarkdown.length === length) {
                 clearInterval(timer);
-                callback && callback();
+                resolve();
             } else {
                 $resumeMarkdown.html(currentMarkdown);
                 start++;
             }
         }, delay);
-    };
+    });
 };
 
 /* harmony default export */ __webpack_exports__["a"] = ({
@@ -256,13 +235,13 @@ const showResume = () => {
 });
 
 /***/ }),
-/* 4 */
+/* 3 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__data_style__ = __webpack_require__(8);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__data_style__ = __webpack_require__(7);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__vQuery__ = __webpack_require__(0);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_prismjs__ = __webpack_require__(10);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_prismjs__ = __webpack_require__(9);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_prismjs___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_2_prismjs__);
 /**
  * 动态添加style样式
@@ -290,7 +269,7 @@ const showStyles = num => {
     let length;
     let prevLength;
 
-    return callback => {
+    return new Promise((resolve, reject) => {
         if (!style) {
             return;
         }
@@ -311,7 +290,7 @@ const showStyles = num => {
             currentStyle += char;
             if (currentStyle.length === length) {
                 clearInterval(timer);
-                callback && callback();
+                resolve();
             } else {
                 let top = $stylePre.height() - MAX_HEIGHT;
                 if (top > 0) {
@@ -321,7 +300,7 @@ const showStyles = num => {
                 $stylePre.html(__WEBPACK_IMPORTED_MODULE_2_prismjs___default.a.highlight(currentStyle, __WEBPACK_IMPORTED_MODULE_2_prismjs___default.a.languages.css));
             }
         }, delay);
-    };
+    });
 };
 
 /* harmony default export */ __webpack_exports__["a"] = ({
@@ -329,23 +308,21 @@ const showStyles = num => {
 });
 
 /***/ }),
-/* 5 */
+/* 4 */
 /***/ (function(module, exports) {
 
 // removed by extract-text-webpack-plugin
 
 /***/ }),
-/* 6 */
+/* 5 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__styles_base_scss__ = __webpack_require__(5);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__styles_base_scss__ = __webpack_require__(4);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__styles_base_scss___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0__styles_base_scss__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__styleEditor__ = __webpack_require__(4);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__resumeEditor__ = __webpack_require__(3);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__genHandler__ = __webpack_require__(2);
-
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__styleEditor__ = __webpack_require__(3);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__resumeEditor__ = __webpack_require__(2);
 
 
 
@@ -353,16 +330,17 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 let { showStyles } = __WEBPACK_IMPORTED_MODULE_1__styleEditor__["a" /* default */];
 let { showResume, markdownToHtml } = __WEBPACK_IMPORTED_MODULE_2__resumeEditor__["a" /* default */];
 
-__webpack_require__.i(__WEBPACK_IMPORTED_MODULE_3__genHandler__["a" /* default */])(function* drawMyResume() {
-    yield showStyles(0);
-    yield showResume();
-    yield showStyles(1);
-    yield markdownToHtml();
-    yield showStyles(2);
-});
+async function drawMyResume() {
+    await showStyles(0);
+    await showResume();
+    await showStyles(1);
+    await markdownToHtml();
+    await showStyles(2);
+}
+drawMyResume();
 
 /***/ }),
-/* 7 */
+/* 6 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -394,7 +372,7 @@ let resumeMarkdown = `Jesonhu
 /* harmony default export */ __webpack_exports__["a"] = (resumeMarkdown);
 
 /***/ }),
-/* 8 */
+/* 7 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -492,7 +470,7 @@ html{
 /* harmony default export */ __webpack_exports__["a"] = (styles);
 
 /***/ }),
-/* 9 */
+/* 8 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function(global) {/**
@@ -1785,7 +1763,7 @@ if (true) {
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(1)))
 
 /***/ }),
-/* 10 */
+/* 9 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function(global) {
