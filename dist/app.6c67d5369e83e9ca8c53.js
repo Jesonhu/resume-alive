@@ -359,9 +359,9 @@ let { showResume, markdownToHtml } = __WEBPACK_IMPORTED_MODULE_2__resumeEditor__
 
 __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_3__genHandler__["a" /* default */])(function* drawMyResume() {
     yield showStyles(0);
-    yield resumeEditor();
+    yield showResume();
     yield showStyles(1);
-    yield resumeEditor();
+    yield markdownToHtml();
     yield showStyles(2);
 });
 
