@@ -202,27 +202,31 @@ let start = 0;
 let iClass = 'htmlMode';
 
 // Markdown 转换为 html格式
-const markdownToHtml = callback => {
-    $resumeMarkdown.css({
-        display: 'none'
+const markdownToHtml = () => {
+    return new Promise((resolve, reject) => {
+        $resumeMarkdown.css({
+            display: 'none'
+        });
+        $resumeWrap.addClass(iClass);
+        $resumeTag.html(__WEBPACK_IMPORTED_MODULE_2_marked___default()(__WEBPACK_IMPORTED_MODULE_0__data_resume__["a" /* default */]));
+        resolve();
     });
-    $resumeWrap.addClass(iClass);
-    $resumeTag.html(__WEBPACK_IMPORTED_MODULE_2_marked___default()(__WEBPACK_IMPORTED_MODULE_0__data_resume__["a" /* default */]));
-    callback && callback();
 };
 
 // 每隔60ms不断添加内容
-const showResume = callback => {
-    timer = setInterval(function () {
-        currentMarkdown += __WEBPACK_IMPORTED_MODULE_0__data_resume__["a" /* default */].substring(start, start + 1);
-        if (currentMarkdown.length === length) {
-            clearInterval(timer);
-            callback && callback();
-        } else {
-            $resumeMarkdown.html(currentMarkdown);
-            start++;
-        }
-    }, delay);
+const showResume = () => {
+    return new Promise((resolve, reject) => {
+        timer = setInterval(function () {
+            currentMarkdown += __WEBPACK_IMPORTED_MODULE_0__data_resume__["a" /* default */].substring(start, start + 1);
+            if (currentMarkdown.length === length) {
+                clearInterval(timer);
+                resolve();
+            } else {
+                $resumeMarkdown.html(currentMarkdown);
+                start++;
+            }
+        }, delay);
+    });
 };
 
 /* harmony default export */ __webpack_exports__["a"] = ({
@@ -260,41 +264,44 @@ const goBottom = top => {
     $stylesWrap.scrollTop(top);
 };
 
-const showStyles = (num, callback) => {
+const showStyles = num => {
+
     let style = __WEBPACK_IMPORTED_MODULE_0__data_style__["a" /* default */][num];
     let length;
     let prevLength;
-
-    if (!style) {
-        return;
-    }
-
-    length = __WEBPACK_IMPORTED_MODULE_0__data_style__["a" /* default */].filter((item, i) => {
-        return i <= num;
-    }).reduce((result, item) => {
-        result += item.length;
-        return result;
-    }, 0);
-
-    prevLength = length - style.length;
-
-    clearInterval(timer);
-    timer = setInterval(() => {
-        let start = currentStyle.length - prevLength;
-        let char = style.substring(start, start + 1) || '';
-        currentStyle += char;
-        if (currentStyle.length === length) {
-            clearInterval(timer);
-            callback && callback();
-        } else {
-            let top = $stylePre.height() - MAX_HEIGHT;
-            if (top > 0) {
-                goBottom(top);
-            }
-            $style.html(currentStyle);
-            $stylePre.html(__WEBPACK_IMPORTED_MODULE_2_prismjs___default.a.highlight(currentStyle, __WEBPACK_IMPORTED_MODULE_2_prismjs___default.a.languages.css));
+    return new Promise((resolve, reject) => {
+        if (!style) {
+            return;
         }
-    }, delay);
+
+        length = __WEBPACK_IMPORTED_MODULE_0__data_style__["a" /* default */].filter((item, i) => {
+            return i <= num;
+        }).reduce((result, item) => {
+            result += item.length;
+            return result;
+        }, 0);
+
+        prevLength = length - style.length;
+
+        clearInterval(timer);
+        timer = setInterval(() => {
+            let start = currentStyle.length - prevLength;
+            let char = style.substring(start, start + 1) || '';
+            currentStyle += char;
+            if (currentStyle.length === length) {
+                clearInterval(timer);
+
+                resolve();
+            } else {
+                let top = $stylePre.height() - MAX_HEIGHT;
+                if (top > 0) {
+                    goBottom(top);
+                }
+                $style.html(currentStyle);
+                $stylePre.html(__WEBPACK_IMPORTED_MODULE_2_prismjs___default.a.highlight(currentStyle, __WEBPACK_IMPORTED_MODULE_2_prismjs___default.a.languages.css));
+            }
+        }, delay);
+    });
 };
 
 /* harmony default export */ __webpack_exports__["a"] = ({
@@ -324,15 +331,12 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 let { showStyles } = __WEBPACK_IMPORTED_MODULE_1__styleEditor__["a" /* default */];
 let { showResume, markdownToHtml } = __WEBPACK_IMPORTED_MODULE_2__resumeEditor__["a" /* default */];
 
-// 0 1 2 表示data/style.js数组的序列号
-showStyles(0, () => {
-    showResume(() => {
-        showStyles(1, () => {
-            markdownToHtml(() => {
-                showStyles(2);
-            });
-        });
-    });
+let showStylesWrap = num => showStyles(num);
+let markdownToHtmlWrap = () => markdownToHtml();
+let showResumeWrap = () => showResume();
+
+showStylesWrap(0).then(showResumeWrap).then(showStylesWrap.bind(null, 1)).then(markdownToHtmlWrap).then(showStylesWrap.bind(null, 2)).catch(err => {
+    console.log(err);
 });
 
 /***/ }),
