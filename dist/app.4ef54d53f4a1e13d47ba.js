@@ -185,12 +185,8 @@ const genHandler = generator => {
     let next = data => {
         let result = gen.next(data);
 
-        if (result.done) {
-            return result.value;
-        } else {
-            result.value.then(data => {
-                next(data);
-            });
+        if (!result.done) {
+            result.value(next);
         }
     };
     next();
@@ -228,30 +224,30 @@ let iClass = 'htmlMode';
 
 // Markdown 转换为 html格式
 const markdownToHtml = () => {
-    return new Promise((resolve, reject) => {
+    return callback => {
         $resumeMarkdown.css({
             display: 'none'
         });
         $resumeWrap.addClass(iClass);
         $resumeTag.html(__WEBPACK_IMPORTED_MODULE_2_marked___default()(__WEBPACK_IMPORTED_MODULE_0__data_resume__["a" /* default */]));
-        resolve();
-    });
+        callback && callback();
+    };
 };
 
 // 每隔60ms不断添加内容
 const showResume = () => {
-    return new Promise((resolve, reject) => {
+    return callback => {
         timer = setInterval(function () {
             currentMarkdown += __WEBPACK_IMPORTED_MODULE_0__data_resume__["a" /* default */].substring(start, start + 1);
             if (currentMarkdown.length === length) {
                 clearInterval(timer);
-                resolve();
+                callback && callback();
             } else {
                 $resumeMarkdown.html(currentMarkdown);
                 start++;
             }
         }, delay);
-    });
+    };
 };
 
 /* harmony default export */ __webpack_exports__["a"] = ({
@@ -294,7 +290,7 @@ const showStyles = num => {
     let length;
     let prevLength;
 
-    return new Promise((resolve, reject) => {
+    return callback => {
         if (!style) {
             return;
         }
@@ -315,7 +311,7 @@ const showStyles = num => {
             currentStyle += char;
             if (currentStyle.length === length) {
                 clearInterval(timer);
-                resolve();
+                callback && callback();
             } else {
                 let top = $stylePre.height() - MAX_HEIGHT;
                 if (top > 0) {
@@ -325,7 +321,7 @@ const showStyles = num => {
                 $stylePre.html(__WEBPACK_IMPORTED_MODULE_2_prismjs___default.a.highlight(currentStyle, __WEBPACK_IMPORTED_MODULE_2_prismjs___default.a.languages.css));
             }
         }, delay);
-    });
+    };
 };
 
 /* harmony default export */ __webpack_exports__["a"] = ({
